@@ -35,4 +35,23 @@ describe DockingStation do
   it "Should default to a capacity of 20" do
     expect(subject.capacity).to eq DockingStation::DEFAULT_CAPACITY
   end
+
+  it 'Should let me report a broken bike when returning it' do
+    bike = Bike.new(false)
+    expect(subject.dock(bike)).to eq bike
+  end
+
+  it 'Docking station does not release broken bikes' do
+    bike1 = Bike.new(false)
+    subject.dock(bike1)
+    bike2 = Bike.new(true)
+    subject.dock(bike2)
+    expect(subject.release_bike.working).to eq true
+  end
+
+  it 'Docking station receives all bikes broken or not' do
+    broken_bike = Bike.new(false)
+    subject.dock(broken_bike)
+    expect(subject.spaces_left).to eq 19
+  end
 end
