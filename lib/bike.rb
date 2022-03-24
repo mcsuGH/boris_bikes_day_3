@@ -6,10 +6,6 @@ class Bike
 
 
   def working?
-    if true 
-      return "Working"
-    else 
-      return "Not Working"
-    end
+    true
   end
 end
