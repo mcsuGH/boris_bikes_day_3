@@ -1,20 +1,17 @@
 require 'dockingstation'
 
 describe DockingStation do 
-  let(:bike) { double :bike }
-  let(:bike2) { double :bike }
+
   it 'Releases a bike and checks bike is working' do
-    allow(bike).to receive(:working).and_return(true)
-    subject.dock(bike)
+    subject.dock(double(:working => true))
     released_bike = subject.release_bike
     expect(released_bike.working).to eq true
   end 
 
   it 'Docks a bike' do
-    docking_station = DockingStation.new
-    allow(bike).to receive(:working).and_return(false)
-    docking_station.dock(bike)
-    expect(docking_station.bike).to eq bike
+    bike = double(:working => false)
+    subject.dock(bike)
+    expect(subject.bike).to eq bike
   end
 
    describe '#release_bike' do
@@ -25,9 +22,8 @@ describe DockingStation do
 
   describe '#dock' do
     it 'Should not accept bike if dock full' do
-      allow(bike).to receive(:working).and_return(true)
-      DockingStation::DEFAULT_CAPACITY.times do subject.dock(bike) end
-      expect { subject.dock(bike) }.to raise_error 'Dock full'
+      DockingStation::DEFAULT_CAPACITY.times do subject.dock(double(:working => true)) end
+      expect { subject.dock(double) }.to raise_error 'Dock full'
     end
   end
 
@@ -41,21 +37,18 @@ describe DockingStation do
   end
 
   it 'Should let me report a broken bike when returning it' do
-    allow(bike).to receive(:working).and_return(false)
+    bike = double(:working => false)
     expect(subject.dock(bike)).to eq bike
   end
 
   it 'Docking station does not release broken bikes' do
-    allow(bike).to receive(:working).and_return(false)
-    subject.dock(bike)
-    allow(bike2).to receive(:working).and_return(true)
-    subject.dock(bike2)
+    subject.dock(double(:working => false))
+    subject.dock(double(:working => true))
     expect(subject.release_bike.working).to eq true
   end
 
   it 'Docking station receives all bikes broken or not' do
-    allow(bike).to receive(:working).and_return(false)
-    subject.dock(bike)
+    subject.dock(double(:working => false))
     expect(subject.spaces_left).to eq 19
   end
 end
