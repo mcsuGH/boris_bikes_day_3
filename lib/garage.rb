@@ -20,4 +20,3 @@ class Garage
 end
 
 
-    
